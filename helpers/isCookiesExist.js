@@ -1,12 +1,15 @@
-import fs from 'fs';
+import { access, constants } from 'node:fs/promises';
 
-const isCookiesExist = () => {
+async function isContentExist() {
   try {
-    return fs.existsSync('./cookies.json');
+    return await access('cookies.json', constants.F_OK).then(() => true);
   } catch (err) {
-    console.log(err);
+    if (err.code === 'ENOENT') {
+      console.log('File not found!');
+    } else {
+      console.log(err);
+    }
   }
-};
+}
 
-export default isCookiesExist;
-
+export default isContentExist;

@@ -1,12 +1,12 @@
-import fs from 'fs';
+import { writeFile } from 'node:fs/promises';
 
-const saveContent = async (content) => {
+async function saveContent(content) {
   try {
-    fs.writeFileSync('./content.json', JSON.stringify(content, null, 2));
+    const data = JSON.stringify(content, null, 2);
+    await writeFile('./content.json', data);
   } catch (err) {
     console.log(err);
   }
-};
+}
 
 export default saveContent;
-

@@ -2,20 +2,20 @@ import config from '../config/index.js';
 import isLoggedIn from '../helpers/isLoggedIn.js';
 import saveCookies from './saveCookies.js';
 
-const login = async (page) => {
+async function login(page) {
   try {
     await page.goto(config.cubis.login_url, {
-      waitUntil: 'networkidle0'
+      waitUntil: 'networkidle0',
     });
 
     // type username and password
     await page.waitForSelector(config.selector.username);
     await page.type(config.selector.username, config.cubis.username, {
-      delay: 200
+      delay: 200,
     });
     await page.waitForSelector(config.selector.password);
     await page.type(config.selector.password, config.cubis.password, {
-      delay: 200
+      delay: 200,
     });
 
     console.log('Logging in...');
@@ -38,6 +38,6 @@ const login = async (page) => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
 export default login;

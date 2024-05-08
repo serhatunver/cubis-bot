@@ -1,12 +1,15 @@
-import fs from 'fs';
+import { access, constants } from 'node:fs/promises';
 
-const isContentExist = () => {
+async function isContentExist() {
   try {
-    return fs.existsSync('./content.json');
+    return await access('content.json', constants.F_OK).then(() => true);
   } catch (err) {
-    console.log(err);
+    if (err.code === 'ENOENT') {
+      console.log('File not found!');
+    } else {
+      console.log(err);
+    }
   }
-};
+}
 
 export default isContentExist;
-
