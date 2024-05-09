@@ -1,30 +1,37 @@
+import axios from 'axios';
 import config from '../config/index.js';
 import saveContent from '../functions/saveContent.js';
 
-const notify = async (items, existingContent) => {
-  try {
-    items.forEach(async (item) => {
-      const msg = `${item.course} ${Object.keys(item)[1]} notu girildi`;
-      const url = `https://api.telegram.org/bot${config.telegram.botToken}/sendMessage?chat_id=${config.telegram.chatId}&text=${msg}`;
+async function notify(courses, existingContent) {
+  for (const course of courses) {
+    const message = `${course.name} ${Object.keys(course)[1]} notu girildi`;
+    const botToken = config.telegram.botToken;
+    const chatId = config.telegram.chatId;
 
-      await fetch(url)
-        .then(async (response) => {
-          if (response.ok) {
-            console.log('Message sent.');
-            await existingContent.push(item);
-            await saveContent(existingContent);
-          } else {
-            console.log('Error sending message.');
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
-  } catch (err) {
-    console.log(err);
+    try {
+      await sendMessage(chatId, message, botToken);
+      existingContent.push(course);
+      await saveContent(existingContent);
+      console.log('Content saved.');
+    } catch (error) {
+      console.log('Error sending message.', error);
+    }
   }
-};
+}
+
+async function sendMessage(chatId, message, botToken) {
+  const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+  const body = {
+    chat_id: chatId,
+    text: message,
+  };
+
+  try {
+    await axios.post(url, body);
+    console.log('Message sent.');
+  } catch (error) {
+    console.log('Error sending message.', error.message);
+  }
+}
 
 export default notify;
-
