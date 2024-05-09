@@ -1,14 +1,13 @@
-import fs from 'fs';
+import { readFile } from 'node:fs/promises';
 
-const loadCookies = async (page) => {
+async function loadCookies(page) {
   try {
-    const cookiesString = fs.readFileSync('./cookies.json');
-    const cookies = JSON.parse(cookiesString);
+    const cookiesString = await readFile('./cookies.json');
+    const cookies = await JSON.parse(cookiesString);
     await page.setCookie(...cookies);
   } catch (error) {
     console.log(error);
   }
-};
+}
 
 export default loadCookies;
-

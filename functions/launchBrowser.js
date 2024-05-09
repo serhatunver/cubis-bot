@@ -8,13 +8,13 @@ const launchBrowser = async () => {
         '--disable-setuid-sandbox',
         '--no-sandbox',
         '--single-process',
-        '--no-zygote'
+        '--no-zygote',
       ],
       executablePath:
         config.node_env === 'production'
           ? config.puppeteer.executablePath
           : puppeteer.executablePath(),
-      headless: 'new'
+      headless: config.node_env === 'development' ? false : 'new',
     });
 
     return browser;

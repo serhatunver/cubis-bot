@@ -1,14 +1,14 @@
-import fs from 'fs';
+import { readFile, writeFile } from 'node:fs/promises';
 import { differenceWith, isEqual } from 'lodash-es';
 import notify from '../services/notify.js';
 import isContentExist from '../helpers/isContentExist.js';
 
-const compareContent = async (newContent) => {
-  // Check if the file exists
-  const contentExists = isContentExist();
-  if (contentExists) {
-    // If the file exists, compare it with the new content
-    const existingContent = JSON.parse(fs.readFileSync('./content.json'));
+async function compareContent(newContent) {
+  // Check if the content exists
+  const contentExist = await isContentExist();
+  if (contentExist) {
+    // If the content exists, compare it with the new content
+    const existingContent = JSON.parse(await readFile('./content.json'));
 
     const difference = differenceWith(newContent, existingContent, isEqual);
 
@@ -20,11 +20,11 @@ const compareContent = async (newContent) => {
       console.log('No difference found.');
     }
   } else {
-    // If the file does not exist, create it with the new content
-    console.log('File does not exist.');
-    fs.writeFileSync('./content.json', JSON.stringify(newContent, null, 2));
+    // If the content does not exist, create it with the new content
+    console.log('Content does not exist.');
+    const data = JSON.stringify(newContent, null, 2);
+    await writeFile('./content.json', data);
   }
-};
+}
 
 export default compareContent;
-

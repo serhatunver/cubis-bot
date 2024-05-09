@@ -1,9 +1,9 @@
 import config from '../config/index.js';
 
-const isLoggedIn = async (page) => {
+async function isLoggedIn(page) {
   try {
     await page.goto(config.cubis.courses_url, {
-      waitUntil: 'networkidle0'
+      waitUntil: 'networkidle0',
     });
 
     return page.url() === config.cubis.courses_url;
@@ -12,7 +12,6 @@ const isLoggedIn = async (page) => {
     console.log('Login failed.');
     return false;
   }
-};
+}
 
 export default isLoggedIn;
-
