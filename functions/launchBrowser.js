@@ -1,7 +1,7 @@
 import config from '../config/index.js';
 import puppeteer from 'puppeteer';
 
-const launchBrowser = async () => {
+async function launchBrowser() {
   try {
     const browser = await puppeteer.launch({
       args: [
@@ -23,6 +23,6 @@ const launchBrowser = async () => {
     console.log('Browser launch failed.');
     return null;
   }
-};
+}
 
 export default launchBrowser;
