@@ -1,6 +1,6 @@
 import { access, constants } from 'node:fs/promises';
 
-async function isContentExist() {
+async function isCookieExist() {
   try {
     return await access('cookies.json', constants.F_OK).then(() => true);
   } catch (err) {
@@ -12,4 +12,4 @@ async function isContentExist() {
   }
 }
 
-export default isContentExist;
+export default isCookieExist;
