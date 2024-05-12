@@ -1,10 +1,8 @@
 import launchBrowser from './launchBrowser.js';
-import loadCookies from './loadCookies.js';
-import isLoggedIn from '../helpers/isLoggedIn.js';
-import fetchContent from './fetchContent.js';
-import compareContent from './compareContent.js';
-import login from './login.js';
-import isCookiesExist from '../helpers/isCookiesExist.js';
+import fetchAndCompareContent from './fetchAndCompareContent.js';
+import handleLogin from './handleLogin.js';
+import isCookieExist from '../helpers/isCookieExist.js';
+import isSessionValid from '../helpers/isSessionValid.js';
 
 async function runProcess() {
   let browser = null;
@@ -12,28 +10,22 @@ async function runProcess() {
     browser = await launchBrowser();
     const page = await browser.newPage();
 
-    const cookiesExist = await isCookiesExist();
+    const cookiesExist = await isCookieExist();
     if (cookiesExist) {
-      await loadCookies(page);
-      const loggedIn = await isLoggedIn(page);
-      if (loggedIn) {
-        // Cookies are valid,
-        console.log('Cookies are valid.');
-        const content = await fetchContent(page);
-        await compareContent(content);
+      const sessionValid = await isSessionValid(page);
+      if (sessionValid) {
+        console.log('Session is valid.');
+        await fetchAndCompareContent(page);
       } else {
-        // Cookies are invalid,
-        console.log('Cookies are invalid.');
-        await login(page);
-        const content = await fetchContent(page);
-        await compareContent(content);
+        console.log('Session is invalid.');
+        await handleLogin(page);
+        await fetchAndCompareContent(page);
       }
     } else {
       // Cookies do not exist,
       console.log('Cookies do not exist.');
-      await login(page);
-      const content = await fetchContent(page);
-      await compareContent(content);
+      await handleLogin(page);
+      await fetchAndCompareContent(page);
     }
   } catch (error) {
     console.log(error);

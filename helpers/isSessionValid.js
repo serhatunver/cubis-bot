@@ -1,4 +1,15 @@
 import { readFile } from 'node:fs/promises';
+import isLoggedIn from './isLoggedIn.js';
+
+async function isSessionValid(page) {
+  try {
+    await loadCookies(page);
+    return await isLoggedIn(page);
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
 
 async function loadCookies(page) {
   try {
@@ -10,4 +21,4 @@ async function loadCookies(page) {
   }
 }
 
-export default loadCookies;
+export default isSessionValid;
