@@ -1,6 +1,23 @@
+import { writeFile } from 'node:fs/promises';
 import config from '../config/index.js';
 import isLoggedIn from '../helpers/isLoggedIn.js';
-import saveCookies from './saveCookies.js';
+
+async function handleLogin(page) {
+  try {
+    await login(page);
+    const loggedIn = await isLoggedIn(page);
+
+    if (loggedIn) {
+      console.log('Logged in.');
+      await saveCookies(page);
+    } else {
+      console.log('Failed to log in.');
+      // Handle login failure...
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 async function login(page) {
   try {
@@ -25,19 +42,19 @@ async function login(page) {
     await page.click(config.selector.submit);
 
     await page.waitForTimeout(5000);
-
-    const loggedIn = await isLoggedIn(page);
-
-    if (loggedIn) {
-      console.log('Logged in.');
-      await saveCookies(page);
-    } else {
-      console.log('Failed to log in.');
-      // Handle login failure...
-    }
   } catch (err) {
     console.log(err);
   }
 }
 
-export default login;
+async function saveCookies(page) {
+  try {
+    const cookiesObject = await page.cookies();
+    const cookiesJson = JSON.stringify(cookiesObject, null, 2);
+    await writeFile('./cookies.json', cookiesJson);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default handleLogin;
