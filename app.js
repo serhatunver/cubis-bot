@@ -1,5 +1,6 @@
 import config from './config/index.js';
 import express from 'express';
+import mongoose from 'mongoose';
 import runProcess from './functions/runProcess.js';
 
 const app = express();
@@ -14,6 +15,20 @@ app.get('/cron', async (req, res) => {
   res.send('Cron job ran successfully.');
 });
 
+const mongoURI = config.db.uri;
+
+const connectMongo = async () => {
+  try {
+    await mongoose.connect(mongoURI);
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.log(err.message);
+    process.exit(1);
+  }
+};
+
+await connectMongo();
+
 app.listen(port, () => {
-  console.log(`app listening on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
