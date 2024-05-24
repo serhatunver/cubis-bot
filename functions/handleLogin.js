@@ -1,6 +1,6 @@
-import { writeFile } from 'node:fs/promises';
 import config from '../config/index.js';
 import isLoggedIn from '../helpers/isLoggedIn.js';
+import studentService from '../services/studentService.js';
 
 async function handleLogin(page) {
   try {
@@ -9,7 +9,8 @@ async function handleLogin(page) {
 
     if (loggedIn) {
       console.log('Logged in.');
-      await saveCookies(page);
+      const cookies = await page.cookies();
+      await saveCookies(cookies);
     } else {
       console.log('Failed to log in.');
       // Handle login failure...
@@ -27,13 +28,9 @@ async function login(page) {
 
     // type username and password
     await page.waitForSelector(config.selector.username);
-    await page.type(config.selector.username, config.cubis.username, {
-      delay: 200,
-    });
+    await page.type(config.selector.username, config.cubis.username);
     await page.waitForSelector(config.selector.password);
-    await page.type(config.selector.password, config.cubis.password, {
-      delay: 200,
-    });
+    await page.type(config.selector.password, config.cubis.password);
 
     console.log('Logging in...');
 
@@ -41,17 +38,19 @@ async function login(page) {
     await page.waitForSelector(config.selector.submit);
     await page.click(config.selector.submit);
 
-    await page.waitForTimeout(5000);
+    await page.waitForSelector(config.selector.login_success);
   } catch (err) {
     console.log(err);
   }
 }
 
-async function saveCookies(page) {
+async function saveCookies(cookies) {
   try {
-    const cookiesObject = await page.cookies();
-    const cookiesJson = JSON.stringify(cookiesObject, null, 2);
-    await writeFile('./cookies.json', cookiesJson);
+    const studentId = config.cubis.username;
+
+    await studentService.SaveCookies(studentId, cookies);
+
+    console.log('Cookies saved.');
   } catch (error) {
     console.log(error);
   }

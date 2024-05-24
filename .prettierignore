@@ -1,0 +1,12 @@
+# Ignore artifacts:
+build
+coverage
+keys
+logs
+node_modules
+dist
+
+# Ignore all markdown files:
+*.md
+
+pnpm-lock.yaml

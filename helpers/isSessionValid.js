@@ -1,9 +1,8 @@
-import { readFile } from 'node:fs/promises';
 import isLoggedIn from './isLoggedIn.js';
 
-async function isSessionValid(page) {
+async function isSessionValid(page, cookies) {
   try {
-    await loadCookies(page);
+    await loadCookies(page, cookies);
     return await isLoggedIn(page);
   } catch (error) {
     console.log(error);
@@ -11,10 +10,8 @@ async function isSessionValid(page) {
   }
 }
 
-async function loadCookies(page) {
+async function loadCookies(page, cookies) {
   try {
-    const cookiesString = await readFile('./cookies.json');
-    const cookies = await JSON.parse(cookiesString);
     await page.setCookie(...cookies);
   } catch (error) {
     console.log(error);
