@@ -41,11 +41,7 @@ async function fetchContent(page) {
       .map((i, el) => {
         // For each element, return an object with the name and other data
         return {
-          name: $(el)
-            .parentsUntil('div')
-            .find('h5')
-            .text()
-            .replace(/\n\s+/g, ''), // Remove newline and whitespace characters
+          name: $(el).parentsUntil('div').find('h5').text().replace(/\n\s+/g, ''), // Remove newline and whitespace characters
           [$(el).parent().prev().text()]: $(el).text(),
         };
       })
